@@ -6,7 +6,7 @@
   <div class="pagetitle">
     <div class="d-flex justify-content-between align-items-center">
       <h1>Creacion de cuentas y actividades</h1>
-      <a href="#" class="btn btn-primary" id="btn">Cargar lista</a>
+      <a href="#" class="btn btn-primary" id="btn">Crear Actividad</a>
     </div>
     <nav>
       <ol class="breadcrumb">
