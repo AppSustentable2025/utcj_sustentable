@@ -19,44 +19,19 @@
     </nav>
   </div><!-- End Page Title -->
 
-  <!-- Mensajes de éxito o error -->
+  <!-- En la vista -->
   @if(session('success'))
-    <div class="alert alert-success">
-      {{ session('success') }}
-    </div>
+  <div class="alert alert-success alert-dismissible fade show" role="alert" style="font-weight: bold; font-size: 1.1em;">
+    <i class="bi bi-check-circle me-1"></i>
+    {{ session('success') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
   @endif
 
   @if(session('error'))
-    <div class="alert alert-danger">
-      {{ session('error') }}
-    </div>
-  @endif
-  
-  <!-- Si hay alumnos registrados, mostrarlos -->
-  @if(session('alumnos_registrados'))
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Alumnos registrados correctamente</h5>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Matrícula</th>
-              <th>Nombre</th>
-              <th>Contraseña</th>
-            </tr>
-          </thead>
-          <tbody>
-            @foreach(session('alumnos_registrados') as $alumno)
-              <tr>
-                <td>{{ $alumno['matricula'] }}</td>
-                <td>{{ $alumno['nombre'] }}</td>
-                <td>{{ $alumno['password'] }}</td>
-              </tr>
-            @endforeach
-          </tbody>
-        </table>
-      </div>
-    </div>
+  <div class="alert alert-danger">
+    {{ session('error') }}
+  </div>
   @endif
 
   <section class="section">
@@ -89,7 +64,7 @@
               <tbody id="tbodyAlumnos">
                 <!-- Aquí se cargarán los datos del Excel con JavaScript -->
               </tbody>
-              
+
               <!-- Aquí agregamos un formulario oculto que se llenará dinámicamente con JavaScript -->
               <form id="alumnosForm" action="{{ route('alumnos.registrar') }}" method="POST" style="display: none;">
                 @csrf
@@ -176,7 +151,7 @@
 
         // Limpiar la tabla antes de cargar los datos
         $("#tbodyAlumnos").empty();
-        
+
         // Limpiar también el formulario oculto
         $("#alumnosForm").html('');
         $("#alumnosForm").append('@csrf');
@@ -220,10 +195,10 @@
         alert("No hay alumnos para registrar. Por favor cargue una lista primero.");
         return false;
       }
-      
+
       // Transferir los campos del formulario oculto al formulario principal
       $("#alumnosForm input").clone().appendTo($(this));
-      
+
       return true;
     });
   });
@@ -288,5 +263,20 @@
         $(this).find("th").text(index + 1); // Reasignar los valores de ID
       });
     });
+  });
+</script>
+
+<script>
+  // Hacer que los mensajes de alerta se mantengan visibles por 5 segundos
+  $(document).ready(function() {
+    // Mostrar las alertas
+    $('.alert').show();
+    
+    // Establecer un temporizador para ocultar las alertas después de 5 segundos
+    setTimeout(function() {
+      $('.alert').fadeTo(500, 0).slideUp(500, function() {
+        $(this).remove();
+      });
+    }, 5000);
   });
 </script>

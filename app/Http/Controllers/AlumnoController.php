@@ -8,6 +8,13 @@ use Illuminate\Support\Str;
 
 class AlumnoController extends Controller
 {
+
+    public function index()
+    {
+        $alumnos = Alumno::all(); // Obtener todos los alumnos
+        return view('lista-alumnos', compact('alumnos'));
+    }
+    
     /**
      * Registra múltiples alumnos en la base de datos y genera contraseñas aleatorias.
      *
@@ -22,7 +29,8 @@ class AlumnoController extends Controller
             'alumnos.*.nombre' => 'required|string',
         ]);
 
-        $alumnosRegistrados = [];
+        $alumnosCreados = 0;
+        $alumnosExistentes = 0;
         $alumnos = $request->alumnos;
 
         foreach ($alumnos as $alumnoData) {
@@ -30,12 +38,7 @@ class AlumnoController extends Controller
             $alumnoExistente = Alumno::where('matricula', $alumnoData['matricula'])->first();
             
             if ($alumnoExistente) {
-                // Si ya existe, simplemente agregarlo al array de resultados con su contraseña actual
-                $alumnosRegistrados[] = [
-                    'matricula' => $alumnoExistente->matricula,
-                    'nombre' => $alumnoExistente->nombre,
-                    'password' => 'Ya registrado anteriormente'
-                ];
+                $alumnosExistentes++;
                 continue;
             }
             
@@ -49,18 +52,12 @@ class AlumnoController extends Controller
             $alumno->password = bcrypt($password); // Encriptar la contraseña
             $alumno->save();
             
-            // Agregar a la lista de resultados
-            $alumnosRegistrados[] = [
-                'matricula' => $alumno->matricula,
-                'nombre' => $alumno->nombre,
-                'password' => $password // Guardamos la contraseña sin encriptar para mostrarla
-            ];
+            $alumnosCreados++;
         }
         
-        // Redirigir con mensaje de éxito y los datos registrados
+        // Redirigir con mensaje de éxito pero sin los datos registrados
         return redirect()->back()
-            ->with('success', 'Se han creado ' . count($alumnosRegistrados) . ' cuentas de alumnos correctamente.')
-            ->with('alumnos_registrados', $alumnosRegistrados);
+            ->with('success', "Se han creado $alumnosCreados cuentas de alumnos correctamente. $alumnosExistentes ya existían.");
     }
     
     /**
