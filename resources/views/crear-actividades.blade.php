@@ -4,7 +4,10 @@
 <main id="main" class="main">
 
   <div class="pagetitle">
-    <h1>Creacion de cuentas y actividades</h1>
+    <div class="d-flex justify-content-between align-items-center">
+      <h1>Creacion de cuentas y actividades</h1>
+      <a href="#" class="btn btn-primary" id="btn">Cargar lista</a>
+    </div>
     <nav>
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
@@ -12,6 +15,7 @@
       </ol>
     </nav>
   </div><!-- End Page Title -->
+
 
   <section class="section">
     <div class="row">
@@ -49,7 +53,7 @@
 
       <!-- Tabla lista de tareas -->
       <div class="col-lg-5 d-flex justify-content-end">
-        <div class="card" style="max-width: 300px;">
+        <div class="card" style="max-width: 600px;">
           <div class="card-body">
             <h5 class="card-title">Lista de tareas:</h5>
             <select class="form-select" id="taskSelect" aria-label="Default select example">
@@ -61,16 +65,14 @@
                 {{ $tarea->nombre }}
               </option>
               @endforeach
-
             </select>
-
             <!-- Tabla con filas desmarcadas -->
             <table class="table table-striped table-sm" id="tablaTareas">
               <thead>
                 <tr>
                   <th scope="col" style="width: 10%;">#</th>
-                  <th style="width: 50%;">Nombre</th>
-                  <th style="width: 20%;">Integrantes</th> <!-- Nueva columna -->
+                  <th style="width: 60%;">Nombre</th>
+                  <th style="width: 10%;">Integrantes</th> <!-- Nueva columna -->
                   <th scope="col" style="width: 20%;">Acción</th>
                 </tr>
               </thead>
@@ -82,12 +84,10 @@
           </div>
         </div>
       </div>
-
   </section>
 </main>
 <!-- End #main -->
 @endsection
-
 
 <!-- Firebase Scripts -->
 <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
@@ -169,19 +169,19 @@
 
 <script>
   $(document).ready(function() {
-  let counter = 1;  // Inicializamos un contador
+    let counter = 1; // Inicializamos un contador
 
-  // Al seleccionar una tarea del select
-  $("#taskSelect").change(function() {
-    // Obtener el ID, el nombre de la tarea y los integrantes de la tarea seleccionada
-    var tareaId = $(this).val();
-    var tareaNombre = $(this).find(":selected").data("nombre");
-    var tareaIntegrantes = $(this).find(":selected").data("integrantes");
+    // Al seleccionar una tarea del select
+    $("#taskSelect").change(function() {
+      // Obtener el ID, el nombre de la tarea y los integrantes de la tarea seleccionada
+      var tareaId = $(this).val();
+      var tareaNombre = $(this).find(":selected").data("nombre");
+      var tareaIntegrantes = $(this).find(":selected").data("integrantes");
 
-    // Verificar si ya existe en la tabla
-    if ($("#tarea_" + tareaId).length === 0) {
-      // Si no existe, agregarla a la tabla
-      var nuevaFila = `
+      // Verificar si ya existe en la tabla
+      if ($("#tarea_" + tareaId).length === 0) {
+        // Si no existe, agregarla a la tabla
+        var nuevaFila = `
         <tr id="tarea_${tareaId}">
           <th scope="row">${counter}</th>  <!-- Mostrar el contador como ID -->
           <td>${tareaNombre}</td>
@@ -191,27 +191,26 @@
           </td>
         </tr>
       `;
-      // Agregar la nueva fila a la tabla
-      $("#tablaTareas tbody").append(nuevaFila);
+        // Agregar la nueva fila a la tabla
+        $("#tablaTareas tbody").append(nuevaFila);
 
-      // Aumentar el contador para la siguiente fila
-      counter++;
-    } else {
-      alert("La tarea ya está en la lista.");
-    }
-  });
+        // Aumentar el contador para la siguiente fila
+        counter++;
+      } else {
+        alert("La tarea ya está en la lista.");
+      }
+    });
 
-  // Cuando se haga clic en el botón de eliminar, eliminar la fila de la tabla
-  $(document).on("click", ".btn-eliminar", function() {
-    var tareaId = $(this).data("id");
-    $("#tarea_" + tareaId).remove();
-    
-    // Después de eliminar una fila, actualizar el contador para el siguiente ID
-    counter = 1;  // Reiniciar el contador para no repetir números
-    $("#tablaTareas tbody tr").each(function(index) {
-      $(this).find("th").text(index + 1);  // Reasignar los valores de ID
+    // Cuando se haga clic en el botón de eliminar, eliminar la fila de la tabla
+    $(document).on("click", ".btn-eliminar", function() {
+      var tareaId = $(this).data("id");
+      $("#tarea_" + tareaId).remove();
+
+      // Después de eliminar una fila, actualizar el contador para el siguiente ID
+      counter = 1; // Reiniciar el contador para no repetir números
+      $("#tablaTareas tbody tr").each(function(index) {
+        $(this).find("th").text(index + 1); // Reasignar los valores de ID
+      });
     });
   });
-});
-
 </script>
