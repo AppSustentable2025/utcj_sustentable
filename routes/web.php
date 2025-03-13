@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TareaController;
 use App\Http\Controllers\TareaListarController;
+use App\Http\Controllers\AlumnoController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -45,3 +46,6 @@ Route::get('/lista-actividades', function () {
 Route::get('/crear-actividades', [TareaListarController::class, 'index'])->name('actividades.create');
 
 Route::resource('tareas', TareaController::class);
+
+// Ruta para registrar alumnos
+Route::post('/alumnos/registrar', [AlumnoController::class, 'registrar'])->name('alumnos.registrar');

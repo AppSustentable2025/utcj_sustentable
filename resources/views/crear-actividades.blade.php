@@ -6,7 +6,10 @@
   <div class="pagetitle">
     <div class="d-flex justify-content-between align-items-center">
       <h1>Creacion de cuentas y actividades</h1>
-      <a href="#" class="btn btn-primary" id="btn">Crear Actividad</a>
+      <form action="{{ route('alumnos.registrar') }}" method="POST">
+        @csrf
+        <button type="submit" class="btn btn-primary">Crear Actividad</button>
+      </form>
     </div>
     <nav>
       <ol class="breadcrumb">
@@ -16,6 +19,45 @@
     </nav>
   </div><!-- End Page Title -->
 
+  <!-- Mensajes de éxito o error -->
+  @if(session('success'))
+    <div class="alert alert-success">
+      {{ session('success') }}
+    </div>
+  @endif
+
+  @if(session('error'))
+    <div class="alert alert-danger">
+      {{ session('error') }}
+    </div>
+  @endif
+  
+  <!-- Si hay alumnos registrados, mostrarlos -->
+  @if(session('alumnos_registrados'))
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Alumnos registrados correctamente</h5>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Matrícula</th>
+              <th>Nombre</th>
+              <th>Contraseña</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach(session('alumnos_registrados') as $alumno)
+              <tr>
+                <td>{{ $alumno['matricula'] }}</td>
+                <td>{{ $alumno['nombre'] }}</td>
+                <td>{{ $alumno['password'] }}</td>
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+    </div>
+  @endif
 
   <section class="section">
     <div class="row">
@@ -41,10 +83,18 @@
                   <th scope="col">PERIODO</th>
                   <th scope="col">HORARIO</th>
                   <th scope="col">MATRICULA</th>
-                  <th scope="col">NOMBRE</th> <!-- Ajuste en el ancho -->
+                  <th scope="col">NOMBRE</th>
                 </tr>
               </thead>
-              <tbody id="tbodyAlumnos"></tbody>
+              <tbody id="tbodyAlumnos">
+                <!-- Aquí se cargarán los datos del Excel con JavaScript -->
+              </tbody>
+              
+              <!-- Aquí agregamos un formulario oculto que se llenará dinámicamente con JavaScript -->
+              <form id="alumnosForm" action="{{ route('alumnos.registrar') }}" method="POST" style="display: none;">
+                @csrf
+                <!-- Los campos de alumnos se agregarán dinámicamente aquí -->
+              </form>
             </table>
             <!-- End Table with hoverable rows -->
           </div>
@@ -61,7 +111,7 @@
               @foreach ($tareas as $tarea)
               <option value="{{ $tarea->id }}"
                 data-nombre="{{ $tarea->nombre }}"
-                data-integrantes="{{ $tarea->integrantes }}"> <!-- Agregar el campo de integrantes -->
+                data-integrantes="{{ $tarea->integrantes }}">
                 {{ $tarea->nombre }}
               </option>
               @endforeach
@@ -72,7 +122,7 @@
                 <tr>
                   <th scope="col" style="width: 10%;">#</th>
                   <th style="width: 60%;">Nombre</th>
-                  <th style="width: 10%;">Integrantes</th> <!-- Nueva columna -->
+                  <th style="width: 10%;">Integrantes</th>
                   <th scope="col" style="width: 20%;">Acción</th>
                 </tr>
               </thead>
@@ -93,7 +143,6 @@
 <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.10.1/firebase.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-
 
 <!-- Agregar la librería XLSX para procesar archivos Excel -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
@@ -127,6 +176,10 @@
 
         // Limpiar la tabla antes de cargar los datos
         $("#tbodyAlumnos").empty();
+        
+        // Limpiar también el formulario oculto
+        $("#alumnosForm").html('');
+        $("#alumnosForm").append('@csrf');
 
         // Iterar sobre los datos y cargar solo las columnas deseadas
         sheetData.forEach((row, index) => {
@@ -134,21 +187,44 @@
             var formattedMatricula = `al${row["MATRICULA"]}@utcj.edu.mx`;
 
             var newRow = `
-                            <tr>
-                                <th scope="row">${index + 1}</th>
-                                <td>${row["PERIODO"]}</td>
-                                <td>${row["HORARIO"]}</td>
-                                <td>${formattedMatricula}</td>
-                                <td>${row["NOMBRE"]}</td>
-                            </tr>
-                        `;
+              <tr>
+                <th scope="row">${index + 1}</th>
+                <td>${row["PERIODO"]}</td>
+                <td>${row["HORARIO"]}</td>
+                <td>${formattedMatricula}</td>
+                <td>${row["NOMBRE"]}</td>
+              </tr>
+            `;
             $("#tbodyAlumnos").append(newRow);
+
+            // Agregar los campos ocultos al formulario para cada alumno
+            $("#alumnosForm").append(`
+              <input type="hidden" name="alumnos[${index}][matricula]" value="${formattedMatricula}">
+              <input type="hidden" name="alumnos[${index}][nombre]" value="${row["NOMBRE"]}">
+            `);
           }
         });
+
+        // Hacemos visible el botón de envío después de cargar los datos
+        $('button[type="submit"]').prop('disabled', false);
 
         // Limpiar el input file para permitir cargar el mismo archivo nuevamente
         $("#formFile").val("");
       };
+    });
+
+    // Modificamos el formulario para que use los datos ocultos
+    $("form").submit(function() {
+      // Verificar si hay alumnos cargados
+      if ($("#tbodyAlumnos tr").length === 0) {
+        alert("No hay alumnos para registrar. Por favor cargue una lista primero.");
+        return false;
+      }
+      
+      // Transferir los campos del formulario oculto al formulario principal
+      $("#alumnosForm input").clone().appendTo($(this));
+      
+      return true;
     });
   });
 </script>
