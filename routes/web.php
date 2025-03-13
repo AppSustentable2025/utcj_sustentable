@@ -42,6 +42,14 @@ Route::get('/lista-actividades', function () {
     return view('lista-actividades');
 });
 
+Route::get('/lista-alumnos', function () {
+    return view('lista-alumnos');
+});
+
+Route::get('/crear-actividades', function () {
+    return view('crear-actividades');
+})->name('crear-actividades');
+
 ///Ruta Crear Tarea
 Route::get('/crear-actividades', [TareaListarController::class, 'index'])->name('actividades.create');
 
@@ -49,3 +57,6 @@ Route::resource('tareas', TareaController::class);
 
 // Ruta para registrar alumnos
 Route::post('/alumnos/registrar', [AlumnoController::class, 'registrar'])->name('alumnos.registrar');
+
+// Ruta para listar alumnos
+Route::get('/lista-alumnos', [AlumnoController::class, 'index'])->name('alumnos.index');
