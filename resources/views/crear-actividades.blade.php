@@ -6,10 +6,11 @@
   <div class="pagetitle">
     <div class="d-flex justify-content-between align-items-center">
       <h1>Creacion de cuentas y actividades</h1>
-      <form action="{{ route('alumnos.registrar') }}" method="POST">
-        @csrf
-        <button type="submit" class="btn btn-primary">Registrar alumnos</button>
-      </form>
+      <form method="POST" action="{{ route('ejecutar.todas.funciones') }}">
+    @csrf
+    <!-- Tus campos de formulario para alumnos -->
+    <button type="submit" class="btn btn-primary">Crear Alumnos y Actividad</button>
+</form>
       <form action="{{ route('actividad.crear') }}" method="POST">
         @csrf
         <button type="submit" class="btn btn-primary">Crear Actividad1</button>

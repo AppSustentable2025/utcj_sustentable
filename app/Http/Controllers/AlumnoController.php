@@ -82,29 +82,6 @@ class AlumnoController extends Controller
         return $password;
     }
 
-    public function registrarActividad(Request $request)
-{
-    $alumnos = $request->input('alumnos', []);
-
-    if (empty($alumnos)) {
-        return back()->with('error', 'No hay alumnos cargados para crear una actividad.');
-    }
-
-    // Obtener la primera fila de alumnos
-    $primerAlumno = reset($alumnos);
-
-    // Verificar si existen las claves "Periodo" y "Horario"
-    if (!isset($primerAlumno['Periodo']) || !isset($primerAlumno['Horario'])) {
-        return back()->with('error', 'Faltan datos de Periodo u Horario en la lista de alumnos.');
-    }
-
-    // Crear la actividad en la base de datos
-    $actividad = Actividad::create([
-        'Periodo' => $primerAlumno['Periodo'],
-        'Horario' => $primerAlumno['Horario']
-    ]);
-
-    return back()->with('success', 'Actividad creada exitosamente.');
-}
+    
 
 }

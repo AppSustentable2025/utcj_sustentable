@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TareaController;
 use App\Http\Controllers\TareaListarController;
 use App\Http\Controllers\AlumnoController;
+use App\Http\Controllers\ActividadController;
+use App\Http\Controllers\ControladorCombinadoController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -62,4 +64,7 @@ Route::post('/alumnos/registrar', [AlumnoController::class, 'registrar'])->name(
 Route::get('/lista-alumnos', [AlumnoController::class, 'index'])->name('alumnos.index');
 
 // Ruta para registrar actividades
-Route::post('/actividad/crear', [AlumnoController::class, 'registrarActividad'])->name('actividad.crear');
+Route::post('/actividad/crear', [ActividadController::class, 'registrarActividad'])->name('actividad.crear');
+
+// Ruta para ejecutar todas las funciones de Agregar alumno y crear actividad
+Route::post('/ejecutar-todas-funciones', [ControladorCombinadoController::class, 'ejecutarTodasLasFunciones'])->name('ejecutar.todas.funciones');
