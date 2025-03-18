@@ -7,7 +7,7 @@ use App\Http\Controllers\TareaListarController;
 use App\Http\Controllers\AlumnoController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::get('/dashboard', function () {
