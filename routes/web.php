@@ -60,3 +60,6 @@ Route::post('/alumnos/registrar', [AlumnoController::class, 'registrar'])->name(
 
 // Ruta para listar alumnos
 Route::get('/lista-alumnos', [AlumnoController::class, 'index'])->name('alumnos.index');
+
+// Ruta para registrar actividades
+Route::post('/actividad/crear', [AlumnoController::class, 'registrarActividad'])->name('actividad.crear');

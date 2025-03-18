@@ -34,7 +34,6 @@
                 <th scope="col">#</th>
                     <th scope="col">Periodo</th>
                     <th scope="col">Horario</th>
-                    <th scope="col">Nombre de Actividades</th>
                     <th scope="col">Estado</th>
                 </tr>
               </thead>
@@ -43,21 +42,18 @@
                   <th scope="row"><a href="#">1</a></th>
                     <td>JUL-AGO 2025</td>
                     <td>Mar 14.00-16.00</td>
-                    <td>01-02-2025</td>
                     <td><span class="badge bg-success">Completo</span></td>
                   </tr>
                   <tr>
                     <th scope="row"><a href="#">2</a></th>
                     <td>ENE-ABR 2025</td>
-                    <td>Mier 14.00-16.00</td>                    
-                    <td>04-07-2025</td>
+                    <td>Mier 14.00-16.00</td>  
                     <td><span class="badge bg-warning">Pendiente</span></td>
                   </tr>
                   <tr>
                     <th scope="row"><a href="#">3</a></th>
                     <td>OTC-DEC 2025</td>
                     <td>Mar 14.00-16.00</td>
-                    <td>02-06-2025</td>
                     <td><span class="badge bg-success">Completo</span></td>
                   </tr>                  
                 </tbody>

@@ -8,7 +8,11 @@
       <h1>Creacion de cuentas y actividades</h1>
       <form action="{{ route('alumnos.registrar') }}" method="POST">
         @csrf
-        <button type="submit" class="btn btn-primary">Crear Actividad</button>
+        <button type="submit" class="btn btn-primary">Registrar alumnos</button>
+      </form>
+      <form action="{{ route('actividad.crear') }}" method="POST">
+        @csrf
+        <button type="submit" class="btn btn-primary">Crear Actividad1</button>
       </form>
     </div>
     <nav>
@@ -176,6 +180,8 @@
             $("#alumnosForm").append(`
               <input type="hidden" name="alumnos[${index}][matricula]" value="${formattedMatricula}">
               <input type="hidden" name="alumnos[${index}][nombre]" value="${row["NOMBRE"]}">
+              <input type="hidden" name="alumnos[0][Periodo]" value="${row["PERIODO"]}">
+              <input type="hidden" name="alumnos[0][Horario]" value="${row["HORARIO"]}">
             `);
           }
         });
