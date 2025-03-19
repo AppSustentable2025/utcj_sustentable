@@ -7,6 +7,7 @@ use App\Http\Controllers\TareaListarController;
 use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\ControladorCombinadoController;
+use App\Http\Controllers\AsignacionController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -70,3 +71,6 @@ Route::post('/ejecutar-todas-funciones', [ControladorCombinadoController::class,
 
 //Ruta para listar actividades
 Route::get('/lista-actividades', [ActividadController::class, 'index']);
+
+//Ruta ASignar tarea a alumno
+Route::post('/asignar-tareas', [AsignacionController::class, 'asignarTareas'])->name('asignar.tareas');

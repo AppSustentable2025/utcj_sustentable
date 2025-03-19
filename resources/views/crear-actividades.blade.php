@@ -7,14 +7,15 @@
     <div class="d-flex justify-content-between align-items-center">
       <h1>Creacion de cuentas y actividades</h1>
       <form method="POST" action="{{ route('ejecutar.todas.funciones') }}">
-    @csrf
-    <!-- Tus campos de formulario para alumnos -->
-    <button type="submit" class="btn btn-primary">Crear Alumnos y Actividad</button>
-</form>
-      <form action="{{ route('actividad.crear') }}" method="POST">
         @csrf
-        <button type="submit" class="btn btn-primary">Crear Actividad1</button>
+        <!-- Tus campos de formulario para alumnos -->
+        <button type="submit" class="btn btn-primary">Crear Alumnos y Actividad</button>
       </form>
+      <form action="{{ route('asignar.tareas') }}" method="POST">
+        @csrf
+        <button type="submit" class="btn btn-primary">Asignar tareas</button>
+      </form>
+
     </div>
     <nav>
       <ol class="breadcrumb">
@@ -278,7 +279,7 @@
   $(document).ready(function() {
     // Mostrar las alertas
     $('.alert').show();
-    
+
     // Establecer un temporizador para ocultar las alertas después de 5 segundos
     setTimeout(function() {
       $('.alert').fadeTo(500, 0).slideUp(500, function() {
