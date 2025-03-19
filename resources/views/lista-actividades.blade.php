@@ -1,6 +1,10 @@
 @extends('layouts.app2')
 @section('content')
 
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
+
 <main id="main" class="main">
 
   <div class="pagetitle">
@@ -23,40 +27,26 @@
               <h5 class="card-title">Actividades creadas</h5>
             </div>
             <div class="d-flex justify-content-end mb-2">
-            <a href="{{ route('actividades.create') }}" class="btn btn-primary btn-sm px-4">Nuevo</a>
-
-
+              <a href="{{ route('actividades.create') }}" class="btn btn-primary btn-sm px-4">Nuevo</a>
             </div>
             <!-- Table with stripped rows -->
-            <table class="table datatable">
+            <table id="actividadTable" class="table datatable">
               <thead>
                 <tr>
-                <th scope="col">#</th>
-                    <th scope="col">Periodo</th>
-                    <th scope="col">Horario</th>
-                    <th scope="col">Estado</th>
+                  <th scope="col">#</th>
+                  <th scope="col">Periodo</th>
+                  <th scope="col">Horario</th>
                 </tr>
               </thead>
               <tbody>
-                  <tr>
-                  <th scope="row"><a href="#">1</a></th>
-                    <td>JUL-AGO 2025</td>
-                    <td>Mar 14.00-16.00</td>
-                    <td><span class="badge bg-success">Completo</span></td>
-                  </tr>
-                  <tr>
-                    <th scope="row"><a href="#">2</a></th>
-                    <td>ENE-ABR 2025</td>
-                    <td>Mier 14.00-16.00</td>  
-                    <td><span class="badge bg-warning">Pendiente</span></td>
-                  </tr>
-                  <tr>
-                    <th scope="row"><a href="#">3</a></th>
-                    <td>OTC-DEC 2025</td>
-                    <td>Mar 14.00-16.00</td>
-                    <td><span class="badge bg-success">Completo</span></td>
-                  </tr>                  
-                </tbody>
+                @foreach($actividades as $actividad)
+                <tr>
+                  <td><a href="#">{{ $actividad->id }}</a></td>
+                  <td>{{ $actividad->Periodo }}</td>
+                  <td>{{ $actividad->Horario }}</td>
+                </tr>
+                @endforeach
+              </tbody>
             </table>
             <!-- End Table with stripped rows -->
 
@@ -70,3 +60,9 @@
 </main>
 <!-- End #main -->
 @endsection
+
+<!-- Cargar DataTables -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+

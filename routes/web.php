@@ -18,7 +18,6 @@ Route::get('/dashboard', function () {
 
 ///Tareas
 /* Despues de name, no pueden llamarse igual las rutas mas de una vez */
-
 Route::get('/lista-tareas', [TareaController::class, 'index'])->name('tareas.index');
 Route::post('/tareas', [TareaController::class, 'store'])->name('tareas.store');
 Route::put('/tareas/{id}', [TareaController::class, 'update'])->name('tareas.update');
@@ -68,3 +67,6 @@ Route::post('/actividad/crear', [ActividadController::class, 'registrarActividad
 
 // Ruta para ejecutar todas las funciones de Agregar alumno y crear actividad
 Route::post('/ejecutar-todas-funciones', [ControladorCombinadoController::class, 'ejecutarTodasLasFunciones'])->name('ejecutar.todas.funciones');
+
+//Ruta para listar actividades
+Route::get('/lista-actividades', [ActividadController::class, 'index']);

@@ -12,7 +12,8 @@ class ActividadController extends Controller
      */
     public function index()
     {
-        //
+        $actividades = Actividad::select('id', 'Periodo', 'Horario')->get();
+        return view('lista-actividades', compact('actividades'));
     }
 
     /**
