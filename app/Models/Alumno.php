@@ -23,4 +23,5 @@ class Alumno extends Authenticatable
         return $this->belongsToMany(Tarea::class, 'alumno_tarea', 'alumno_id', 'tarea_id')
             ->withPivot('imagen_1', 'imagen_2');
     }
+    
 }

@@ -82,3 +82,6 @@ Route::post('/asignar-tareas', [AsignacionController::class, 'asignarTareas'])->
 //Ruta para ejecutar todas las actividades
 Route::post('/ejecutar-todo', [ControladorCombinadoController::class, 'ejecutarTodo'])->name('ejecutar.todo');
 
+//Ruta para ver tareas de un alumno
+Route::get('/tareas-alumno/{id}', [TareaController::class, 'verTareas']);
+

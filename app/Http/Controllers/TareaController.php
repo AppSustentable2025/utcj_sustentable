@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tarea;
 use Illuminate\Http\Request;
+use App\Models\Alumno;
 
 class TareaController extends Controller
 {
@@ -64,6 +65,12 @@ public function destroy($id)
 
     // Redirigir con mensaje de éxito
     return redirect()->route('tareas.index')->with('success', 'Tarea eliminada correctamente.');
+}
+
+public function verTareas($id)
+{
+    $alumno = Alumno::with('tareas')->findOrFail($id);
+    return view('tareas-alumno', compact('alumno'));
 }
 
 }
