@@ -22,7 +22,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
-                            <h5 class="card-title">Actividades creadas</h5>
+                            <h5 class="card-title">{{ $alumno->nombre }}</h5>
                         </div>
                         <!-- Tabla -->
                         <table class="table datatable">

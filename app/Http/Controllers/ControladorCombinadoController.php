@@ -53,7 +53,7 @@ class ControladorCombinadoController extends Controller
         ]);
     }
 
-    private function registrarAlumnos(Request $request, $actividadId)
+    /* private function registrarAlumnos(Request $request, $actividadId)
     {
         $alumnos = $request->alumnos;
         foreach ($alumnos as $alumnoData) {
@@ -68,7 +68,34 @@ class ControladorCombinadoController extends Controller
                 'alumno_id' => $alumno->id
             ]);
         }
+    } */
+
+    private function registrarAlumnos(Request $request, $actividadId)
+{
+    $alumnos = $request->alumnos;
+    $filePath = storage_path('app/alumnos_registrados.txt'); // Ruta del archivo
+
+    foreach ($alumnos as $alumnoData) {
+        $password = $this->generarPassword(); // Generar contraseña en texto plano
+        $hashedPassword = bcrypt($password); // Encriptar contraseña
+
+        $alumno = Alumno::firstOrCreate(
+            ['matricula' => $alumnoData['matricula']],
+            ['nombre' => $alumnoData['nombre'], 'password' => $hashedPassword]
+        );
+
+        // Relacionar alumno con la actividad
+        ActividadAlumno::firstOrCreate([
+            'actividad_id' => $actividadId,
+            'alumno_id' => $alumno->id
+        ]);
+
+        // Guardar los datos en el archivo de texto
+        $contenido = "Matrícula: {$alumnoData['matricula']}, Nombre: {$alumnoData['nombre']}, Contraseña: {$password}\n";
+        file_put_contents($filePath, $contenido, FILE_APPEND);
     }
+}
+
 
     private function asignarTareas($actividadId)
     {
