@@ -11,8 +11,11 @@ class ActividadController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
+    {/* 
         $actividades = Actividad::select('id', 'Periodo', 'Horario')->get();
+        return view('lista-actividades', compact('actividades')); */
+
+        $actividades = Actividad::with('alumnos')->get();
         return view('lista-actividades', compact('actividades'));
     }
 

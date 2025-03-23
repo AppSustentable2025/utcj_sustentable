@@ -16,11 +16,9 @@
       </ol>
     </nav>
   </div><!-- End Page Title -->
-
   <section class="section">
     <div class="row">
       <div class="col-lg-12">
-
         <div class="card">
           <div class="card-body">
             <div class="d-flex justify-content-between">
@@ -33,26 +31,49 @@
             <table id="actividadTable" class="table datatable">
               <thead>
                 <tr>
-                  <th scope="col">#</th>
+                  <th scope="col">Id</th>
                   <th scope="col">Periodo</th>
                   <th scope="col">Horario</th>
                 </tr>
               </thead>
               <tbody>
                 @foreach($actividades as $actividad)
-                <tr>
-                  <td><a href="#">{{ $actividad->id }}</a></td>
+                <tr data-id="{{ $actividad->id }}" class="parent-row">
+                  <td><a href="javascript:void(0)"><strong>{{ $actividad->id }}</strong></a></td>
                   <td>{{ $actividad->Periodo }}</td>
                   <td>{{ $actividad->Horario }}</td>
+                </tr>
+                <!-- Fila secundaria con alumnos -->
+                <tr class="child-row" id="child-row-{{ $actividad->id }}" style="display:none;">
+                  <td colspan="3">
+                    <!-- Tabla secundaria con alumnos -->
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>ID Alumno</th>
+                          <th>Nombre</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach($actividad->alumnos as $alumno)
+                        <tr>
+                          <td>{{ $alumno->id }}</td>
+                          <td>{{ $alumno->nombre }}</td>
+                        </tr>
+                        @endforeach
+                      </tbody>
+                    </table>
+                  </td>
                 </tr>
                 @endforeach
               </tbody>
             </table>
-            <!-- End Table with stripped rows -->
 
+
+
+            <!-- End Table with stripped rows -->
           </div>
         </div>
-
       </div>
     </div>
   </section>
@@ -66,3 +87,19 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
+<script>
+  $(document).ready(function() {
+    // Manejar el clic en las filas de la tabla
+    $('#actividadTable tbody').on('click', '.parent-row', function() {
+        var actividadId = $(this).data('id');
+        var childRow = $('#child-row-' + actividadId);
+
+        // Alternar la visibilidad de la fila secundaria
+        if (childRow.is(':hidden')) {
+            childRow.show();
+        } else {
+            childRow.hide();
+        }
+    });
+});
+</script>

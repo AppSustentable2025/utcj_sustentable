@@ -44,6 +44,10 @@ Route::get('/lista-actividades', function () {
     return view('lista-actividades');
 });
 
+Route::get('/tareas-alumnos', function () {
+    return view('tareas-alumnos');
+});
+
 Route::get('/lista-alumnos', function () {
     return view('lista-alumnos');
 });
