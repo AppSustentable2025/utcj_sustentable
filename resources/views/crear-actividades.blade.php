@@ -6,16 +6,10 @@
   <div class="pagetitle">
     <div class="d-flex justify-content-between align-items-center">
       <h1>Creacion de cuentas y actividades</h1>
-      <form method="POST" action="{{ route('ejecutar.todas.funciones') }}">
+      <form action="{{ route('ejecutar.todo') }}" method="POST">
         @csrf
-        <!-- Tus campos de formulario para alumnos -->
-        <button type="submit" class="btn btn-primary">Crear Alumnos y Actividad</button>
+        <button type="submit" class="btn btn-primary">Crear Usuarios-asig-activ</button>
       </form>
-      <form action="{{ route('asignar.tareas') }}" method="POST">
-        @csrf
-        <button type="submit" class="btn btn-primary">Asignar tareas</button>
-      </form>
-
     </div>
     <nav>
       <ol class="breadcrumb">
@@ -54,7 +48,7 @@
             <!-- Input file -->
             <div class="d-flex justify-content-between align-items-center">
               <h5 class="card-title">Lista de Alumnos:</h5>
-              <a href="#" class="btn btn-primary" id="xxxx">+ Alumno</a>
+              <!-- <a href="#" class="btn btn-primary" id="xxxx">+ Alumno</a> -->
               <a href="#" class="btn btn-primary" id="btnCargarLista">Cargar lista</a>
             </div>
 

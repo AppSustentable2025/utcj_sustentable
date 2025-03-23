@@ -8,6 +8,7 @@ use App\Models\Tarea;
 use App\Models\AlumnoTarea;
 
 class AsignacionController extends Controller {
+    
     public function asignarTareas(Request $request) {
         // Obtener la lista de alumnos y tareas
         $alumnos = Alumno::all();

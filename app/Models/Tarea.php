@@ -9,9 +9,12 @@ class Tarea extends Model
 {
     use HasFactory;
 
-    protected $table = 'tareas'; // Asegúrate de que el nombre de la tabla sea el correcto.
-    
-    protected $fillable = ['nombre', 'descripcion', 'integrantes']; // Los campos que se pueden llenar masivamente.
+    protected $table = 'tareas';
+    protected $fillable = ['nombre', 'descripcion'];
 
-    public $timestamps = true; // Para que se gestionen los timestamps automáticamente.
+    public function alumnos()
+    {
+        return $this->belongsToMany(Alumno::class, 'alumno_tarea', 'tarea_id', 'alumno_id')
+            ->withPivot('imagen_1', 'imagen_2');
+    }
 }

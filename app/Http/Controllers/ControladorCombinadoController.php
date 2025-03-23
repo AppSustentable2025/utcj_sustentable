@@ -3,170 +3,104 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Actividad;
 use App\Models\Alumno;
+use App\Models\AlumnoTarea;
+use App\Models\Tarea;
+use App\Models\ActividadAlumno;
 
 class ControladorCombinadoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function ejecutarTodo(Request $request)
     {
-        //
-    }
+        DB::beginTransaction();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        try {
+            // 1. Registrar la actividad
+            $actividad = $this->registrarActividad($request);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+            // 2. Registrar alumnos y asociarlos a la actividad
+            $this->registrarAlumnos($request, $actividad->id);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+            // 3. Asignar 8 tareas aleatorias a cada alumno
+            $this->asignarTareas($actividad->id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+            DB::commit();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
-
-    public function ejecutarTodasLasFunciones(Request $request)
-    {
-        // Validar la solicitud
-        $request->validate([
-            'alumnos' => 'required|array',
-            'alumnos.*.matricula' => 'required|string',
-            'alumnos.*.nombre' => 'required|string',
-        ]);
-
-        // Resultados de cada función
-        $resultadoRegistrarAlumnos = $this->registrarAlumnos($request);
-        $resultadoRegistrarActividad = $this->registrarActividad($request);
-        
-        // Combinar los mensajes de éxito
-        $mensajeAlumnos = session('success_alumnos', '');
-        $mensajeActividad = session('success_actividad', '');
-        
-        // Devolver una respuesta combinada
-        return redirect()->back()->with('success', $mensajeAlumnos . ' ' . $mensajeActividad);
-    }
-
-    private function registrarAlumnos(Request $request)
-    {
-        $alumnosCreados = 0;
-        $alumnosExistentes = 0;
-        $alumnos = $request->alumnos;
-        
-        foreach ($alumnos as $alumnoData) {
-            // Verificar si el alumno ya existe
-            $alumnoExistente = Alumno::where('matricula', $alumnoData['matricula'])->first();
-            
-            if ($alumnoExistente) {
-                $alumnosExistentes++;
-                continue;
-            }
-            
-            // Generar una contraseña alfanumérica aleatoria de 8 caracteres
-            $password = $this->generarPassword();
-            
-            // Crear el nuevo alumno
-            $alumno = new Alumno();
-            $alumno->matricula = $alumnoData['matricula'];
-            $alumno->nombre = $alumnoData['nombre'];
-            $alumno->password = bcrypt($password); // Encriptar la contraseña
-            $alumno->save();
-            
-            $alumnosCreados++;
+            return redirect()->back()->with('success', 'Proceso completado correctamente.');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('error', 'Hubo un problema: ' . $e->getMessage());
         }
-        
-        $mensaje = "Se han creado $alumnosCreados cuentas de alumnos correctamente. $alumnosExistentes ya existían.";
-        session()->flash('success_alumnos', $mensaje);
-        
-        return $mensaje;
     }
-    
+
     private function registrarActividad(Request $request)
     {
         $alumnos = $request->input('alumnos', []);
-        
         if (empty($alumnos)) {
-            session()->flash('error_actividad', 'No hay alumnos cargados para crear una actividad.');
-            return 'No hay alumnos cargados para crear una actividad.';
+            throw new \Exception('No hay alumnos cargados para crear una actividad.');
         }
-        
-        // Obtener la primera fila de alumnos
+
         $primerAlumno = reset($alumnos);
-        
-        // Verificar si existen las claves "Periodo" y "Horario"
         if (!isset($primerAlumno['Periodo']) || !isset($primerAlumno['Horario'])) {
-            session()->flash('error_actividad', 'Faltan datos de Periodo u Horario en la lista de alumnos.');
-            return 'Faltan datos de Periodo u Horario en la lista de alumnos.';
+            throw new \Exception('Faltan datos de Periodo u Horario.');
         }
-        
-        // Crear la actividad en la base de datos
-        $actividad = Actividad::create([
+
+        return Actividad::create([
             'Periodo' => $primerAlumno['Periodo'],
             'Horario' => $primerAlumno['Horario']
         ]);
-        
-        $mensaje = 'Actividad creada exitosamente.';
-        session()->flash('success_actividad', $mensaje);
-        
-        return $mensaje;
     }
-    
-    /**
-     * Genera una contraseña alfanumérica aleatoria.
-     *
-     * @param  int  $length
-     * @return string
-     */
+
+    private function registrarAlumnos(Request $request, $actividadId)
+    {
+        $alumnos = $request->alumnos;
+        foreach ($alumnos as $alumnoData) {
+            $alumno = Alumno::firstOrCreate(
+                ['matricula' => $alumnoData['matricula']],
+                ['nombre' => $alumnoData['nombre'], 'password' => bcrypt($this->generarPassword())]
+            );
+
+            // Relacionar alumno con la actividad
+            ActividadAlumno::firstOrCreate([
+                'actividad_id' => $actividadId,
+                'alumno_id' => $alumno->id
+            ]);
+        }
+    }
+
+    private function asignarTareas($actividadId)
+    {
+        $alumnos = Alumno::whereIn('id', function ($query) use ($actividadId) {
+            $query->select('alumno_id')->from('actividad_alumno')->where('actividad_id', $actividadId);
+        })->get();
+
+        $tareas = Tarea::pluck('id')->toArray();
+
+        if (empty($tareas)) {
+            throw new \Exception('No hay tareas disponibles para asignar.');
+        }
+
+        foreach ($alumnos as $alumno) {
+            // Si hay menos de 8 tareas, se repiten aleatoriamente hasta completar 8
+            $tareasAleatorias = collect($tareas)->shuffle()->take(8);
+            while ($tareasAleatorias->count() < 8) {
+                $tareasAleatorias = $tareasAleatorias->merge(collect($tareas)->shuffle()->take(8 - $tareasAleatorias->count()));
+            }
+
+            foreach ($tareasAleatorias as $tareaId) {
+                AlumnoTarea::create([
+                    'alumno_id' => $alumno->id,
+                    'tarea_id' => $tareaId
+                ]);
+            }
+        }
+    }
+
+
     private function generarPassword($length = 8)
     {
-        // Caracteres permitidos para la contraseña (alfanuméricos)
-        $caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        $passwordLength = strlen($caracteres);
-        $password = '';
-        
-        // Generar la contraseña aleatoria
-        for ($i = 0; $i < $length; $i++) {
-            $password .= $caracteres[rand(0, $passwordLength - 1)];
-        }
-        
-        return $password;
+        return substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'), 0, $length);
     }
 }
