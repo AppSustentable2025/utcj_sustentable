@@ -14,12 +14,7 @@
     <nav>
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-        <li class="breadcrumb-item">Crear actividades</li>
-        <select class="form-select" id="taskSelect" aria-label="Default select example">
-              <option selected disabled>Seleccione una actividad</option>              
-              <option value="">                
-              </option>              
-            </select>
+        <li class="breadcrumb-item">Crear actividades</li>        
       </ol>
     </nav>
   </div><!-- End Page Title -->
