@@ -20,8 +20,94 @@
             <div class="d-flex justify-content-between">
               <h5 class="card-title">Actividades creadas</h5>
             </div>
-            <div class="d-flex justify-content-end mb-2">
-              <a href="{{ route('actividades.create') }}" class="btn btn-primary btn-sm px-4">Nuevo</a>
+            <div class="d-flex align-items-center mb-2">
+              <!-- <a href="" class="btn btn-primary btn-sm px-4 me-2">+ Alumno</a> -->
+
+              <!-- Botón para abrir el modal -->
+              <a href="#" class="btn btn-primary btn-sm px-4 me-2" data-bs-toggle="modal" data-bs-target="#addAlumnoModal">+ Alumno</a>
+
+              <!-- Modal -->
+              <!-- Modal para agregar alumno -->
+              <div class="modal fade" id="addAlumnoModal" tabindex="-1" aria-labelledby="addAlumnoModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="addAlumnoModalLabel">Agregar Alumno</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                      <!-- Mensaje de éxito -->
+                      @if(session('success'))
+                      <div class="alert alert-success">
+                        {{ session('success') }}
+                      </div>
+                      @endif
+
+                      <!-- Mensaje de error -->
+                      @if ($errors->any())
+                      <div class="alert alert-danger">
+                        <ul>
+                          @foreach ($errors->all() as $error)
+                          <li>{{ $error }}</li>
+                          @endforeach
+                        </ul>
+                      </div>
+                      @endif
+
+                      <form action="{{ route('registrar.alumno') }}" method="POST">
+                        @csrf
+
+                        <!-- Select para Actividades -->
+                        <div class="mb-3">
+                          <label for="actividadSelect" class="form-label">Seleccionar Actividad</label>
+                          <select id="actividadSelect" name="actividad_id" class="form-control" required>
+                            <option value="">Seleccione una actividad</option>
+                            @foreach($actividades as $actividad)
+                            <option value="{{ $actividad->id }}">{{ $actividad->Periodo }} - {{ $actividad->Horario }}</option>
+                            @endforeach
+                          </select>
+                        </div>
+
+                        <!-- Select para Tareas -->
+                        <div class="mb-3">
+                          <label for="tareaSelect" class="form-label">Seleccionar Tarea</label>
+                          <select id="tareaSelect" name="tarea_id" class="form-control" required>
+                            <option value="">Seleccione una tarea</option>
+                            @foreach($tareas as $tarea)
+                            <option value="{{ $tarea->id }}">{{ $tarea->nombre }}</option>
+                            @endforeach
+                          </select>
+                        </div>
+
+                        <!-- Campo para Matrícula -->
+                        <div class="mb-3">
+                          <label for="matriculaInput" class="form-label">Matrícula</label>
+                          <input type="text" id="matriculaInput" name="matricula" class="form-control"
+                            pattern="al[0-9]{8}@utcj\.edu\.mx" placeholder="Ej. al12345678@utcj.edu.mx" required>
+                          <div class="invalid-feedback">Formato incorrecto: al+6 números+@utcj.edu.mx</div>
+                        </div>
+
+                        <!-- Campo para Nombre -->
+                        <div class="mb-3">
+                          <label for="nombreInput" class="form-label">Nombre</label>
+                          <input type="text" id="nombreInput" name="nombre" class="form-control"
+                            oninput="this.value = this.value.toUpperCase()" placeholder="Nombre del alumno" required>
+                        </div>
+
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                          <button type="submit" class="btn btn-success">Guardar Alumno</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="flex-grow-1"></div>
+              <a href="{{ route('actividades.create') }}" class="btn btn-primary btn-sm px-4">Nueva actividad</a>
             </div>
 
             <!-- Table with stripped rows -->
@@ -59,7 +145,7 @@
                   <tr>
                     <td>
                       <a href="javascript:void(0)" class="alumno-link" data-id="{{ $alumno->id }}">
-                      <strong>{{ $alumno->id }}</strong>
+                        <strong>{{ $alumno->id }}</strong>
                       </a>
                     </td>
                     <td>{{ $alumno->nombre }}</td>
@@ -76,6 +162,9 @@
       </div>
     </div>
   </section>
+
+
+
 </main>
 <!-- End #main -->
 

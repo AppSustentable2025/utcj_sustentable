@@ -8,6 +8,10 @@ use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\ControladorCombinadoController;
 use App\Http\Controllers\AsignacionController;
+use App\Http\Controllers\Alumno2Controller;
+
+
+
 
 Route::get('/', function () {
     return view('auth.login');
@@ -84,4 +88,7 @@ Route::post('/ejecutar-todo', [ControladorCombinadoController::class, 'ejecutarT
 
 //Ruta para ver tareas de un alumno
 Route::get('/tareas-alumno/{id}', [TareaController::class, 'verTareas']);
+
+//Ruta para registrar alumno
+Route::post('/registrar-alumno', [Alumno2Controller::class, 'registrarAlumno'])->name('registrar.alumno');
 

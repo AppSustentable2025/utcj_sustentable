@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Actividad;
+use App\Models\Tarea;
 
 class ActividadController extends Controller
 {
@@ -15,8 +16,11 @@ class ActividadController extends Controller
         $actividades = Actividad::select('id', 'Periodo', 'Horario')->get();
         return view('lista-actividades', compact('actividades')); */
 
+        /* Se cargan actividades y tareas en el modal tambien */
         $actividades = Actividad::with('alumnos')->get();
-        return view('lista-actividades', compact('actividades'));
+        $tareas = Tarea::all(); // Carga todas las tareas
+
+        return view('lista-actividades', compact('actividades', 'tareas'));
     }
 
     /**

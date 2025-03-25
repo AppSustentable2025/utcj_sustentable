@@ -71,30 +71,35 @@ class ControladorCombinadoController extends Controller
     } */
 
     private function registrarAlumnos(Request $request, $actividadId)
-{
-    $alumnos = $request->alumnos;
-    $filePath = storage_path('app/alumnos_registrados.txt'); // Ruta del archivo
+    {
+        $alumnos = $request->alumnos;
+        $filePath = storage_path('app/alumnos_registrados.txt'); // Ruta del archivo
 
-    foreach ($alumnos as $alumnoData) {
-        $password = $this->generarPassword(); // Generar contraseña en texto plano
-        $hashedPassword = bcrypt($password); // Encriptar contraseña
+        foreach ($alumnos as $alumnoData) {
+            $password = $this->generarPassword(); // Generar contraseña en texto plano
+            $hashedPassword = bcrypt($password); // Encriptar contraseña
 
-        $alumno = Alumno::firstOrCreate(
-            ['matricula' => $alumnoData['matricula']],
-            ['nombre' => $alumnoData['nombre'], 'password' => $hashedPassword]
-        );
+            $alumno = Alumno::firstOrCreate(
+                ['matricula' => $alumnoData['matricula']],
+                ['nombre' => $alumnoData['nombre'], 'password' => $hashedPassword]
+            );
 
-        // Relacionar alumno con la actividad
-        ActividadAlumno::firstOrCreate([
-            'actividad_id' => $actividadId,
-            'alumno_id' => $alumno->id
-        ]);
+            // Relacionar alumno con la actividad
+            ActividadAlumno::firstOrCreate([
+                'actividad_id' => $actividadId,
+                'alumno_id' => $alumno->id
+            ]);
 
-        // Guardar los datos en el archivo de texto
-        $contenido = "Matrícula: {$alumnoData['matricula']}, Nombre: {$alumnoData['nombre']}, Contraseña: {$password}\n";
-        file_put_contents($filePath, $contenido, FILE_APPEND);
+            // Guardar los datos en el archivo de texto
+            $contenido = "Matrícula: {$alumnoData['matricula']}, Nombre: {$alumnoData['nombre']}, Contraseña: {$password}\n";
+            file_put_contents($filePath, $contenido, FILE_APPEND);
+        }
     }
-}
+
+    private function generarPassword($length = 8)
+    {
+        return substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'), 0, $length);
+    }
 
 
     private function asignarTareas($actividadId)
@@ -126,8 +131,5 @@ class ControladorCombinadoController extends Controller
     }
 
 
-    private function generarPassword($length = 8)
-    {
-        return substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'), 0, $length);
-    }
+   
 }
